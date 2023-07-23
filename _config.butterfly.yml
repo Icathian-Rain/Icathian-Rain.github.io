@@ -13,10 +13,6 @@ menu:
   归档: /archives/ || fas fa-archive
   标签页: /tags/ || fas fa-tags
   分类页: /categories/ || fas fa-folder-open
-  列表||fas fa-list:
-    知识: /knowledge || fas fa-book
-    音乐: /music/ || fas fa-music
-    电影: /movies/ || fas fa-video
   链接: /link/ || fas fa-link
   关于: /about/ || fas fa-heart
 
@@ -35,17 +31,19 @@ code_word_wrap: false
 #   icon: link || the description || color
 social:
   fab fa-github: https://github.com/2205794866 || Github || '#24292e'
+  iconfont icon-bilibili: https://space.bilibili.com/47310416 || Bilibili || '#20B0E3'
   fas fa-envelope: mailto:2205794866@qq.com || Email || '#4a7dbe'
+  
 
 # Image (圖片設置)
 # --------------------------------------
 
 # Favicon（網站圖標）
-favicon: /img/favicon.png
+favicon: /images/avatar.jpg
 
 # Avatar (頭像)
 avatar:
-  img: https://blog.icathianRain.me/images/avatar.jpg
+  img: /images/avatar.jpg
   effect: false
 
 # Disable all banner image
@@ -100,6 +98,7 @@ error_404:
   enable: true
   subtitle: '前面的区域 以后再来探索吧！NOT FOUND!'
   background: https://i.loli.net/2020/05/19/aKOcLiyPl2JQdFD.png
+  # background: /images/paimen.jpeg
 
 post_meta:
   page: # Home Page
@@ -898,7 +897,8 @@ css_prefix: true
 # 插入代码到头部 </head> 之前 和 底部 </body> 之前
 inject:
   head:
-    # - <link rel="stylesheet" href="/xxx.css">
+    - <link rel="stylesheet" href="//at.alicdn.com/t/c/font_4179705_k5qmnhfql49.css">
+    
   bottom:
     # - <script src="xxxx"></script>
 

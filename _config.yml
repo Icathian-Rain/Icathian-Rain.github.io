@@ -6,7 +6,7 @@
 title: IcathianRain's Blog
 subtitle: 'Share, Learn, Grow.'
 description: '我是天选，也是唯一。'
-keywords:
+keywords: Code Game Life Music
 author: IcathianRain
 language: zh-CN
 timezone: ''
@@ -40,7 +40,10 @@ external_link:
   exclude: ''
 filename_case: 0
 render_drafts: false
-post_asset_folder: false
+post_asset_folder: true
+marked:
+  prependRoot: true
+  postAsset: true
 relative_link: false
 future: true
 highlight:

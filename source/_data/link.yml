@@ -1,0 +1,28 @@
+- class_name: 链接
+  class_desc: 我的其他站点
+  link_list:
+    - name: Github
+      link: https://github.com/2205794866
+      avatar: /images/github.png
+      descr: 我的Github主页
+    - name: Bilibili
+      link: https://space.bilibili.com/47310416
+      avatar: /images/bilibili.png
+      descr: 我的Bilibili主页
+- class_name: 友情链接
+  class_desc: 
+  link_list:
+    - name: Hexo
+      link: https://hexo.io/zh-tw/
+      avatar: https://d33wubrfki0l68.cloudfront.net/6657ba50e702d84afb32fe846bed54fba1a77add/827ae/logo.svg
+      descr: 快速、简单且强大的网志框架
+    - name: Icon-Font
+      link: https://www.iconfont.cn/
+      avatar: https://www.iconfont.cn/favicon.ico
+      descr: 阿里巴巴矢量图标库, 超级好用
+    - name: Font-Awesome
+      link: https://fontawesome.com/
+      avatar: https://fontawesome.com/images/favicon/apple-touch-icon.png
+      descr: Butterfly 主题使用的图标库
+
+    
