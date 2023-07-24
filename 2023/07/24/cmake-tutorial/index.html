@@ -1,0 +1,362 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>cmake_tutorial | IcathianRain's Blog</title><meta name="author" content="IcathianRain"><meta name="copyright" content="IcathianRain"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="CMake Note官网：CMake 官方教材：[Step 1: A Basic Starting Point — CMake 3.25.1 Documentation](https:&#x2F;&#x2F;cmake.org&#x2F;cmake&#x2F;help&#x2F;latest&#x2F;guide&#x2F;tutorial&#x2F;A Basic Starting Point.html#exercise-1-building-a-basic-project">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cmake_tutorial">
+<meta property="og:url" content="https://blog.icathianrain.me/2023/07/24/cmake-tutorial/index.html">
+<meta property="og:site_name" content="IcathianRain&#39;s Blog">
+<meta property="og:description" content="CMake Note官网：CMake 官方教材：[Step 1: A Basic Starting Point — CMake 3.25.1 Documentation](https:&#x2F;&#x2F;cmake.org&#x2F;cmake&#x2F;help&#x2F;latest&#x2F;guide&#x2F;tutorial&#x2F;A Basic Starting Point.html#exercise-1-building-a-basic-project">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.icathianrain.me/images/avatar.jpg">
+<meta property="article:published_time" content="2023-07-24T09:46:33.000Z">
+<meta property="article:modified_time" content="2023-07-24T01:51:23.099Z">
+<meta property="article:author" content="IcathianRain">
+<meta property="article:tag" content="CMake">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.icathianrain.me/images/avatar.jpg"><link rel="shortcut icon" href="/images/avatar.jpg"><link rel="canonical" href="https://blog.icathianrain.me/2023/07/24/cmake-tutorial/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'cmake_tutorial',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-07-24 01:51:23'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="//at.alicdn.com/t/c/font_4179705_k5qmnhfql49.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类页</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="IcathianRain's Blog"><span class="site-name">IcathianRain's Blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类页</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">cmake_tutorial</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-07-24T09:46:33.000Z" title="发表于 2023-07-24 09:46:33">2023-07-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-07-24T01:51:23.099Z" title="更新于 2023-07-24 01:51:23">2023-07-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Knowledge/">Knowledge</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="cmake_tutorial"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="post-content" id="article-container"><h1 id="CMake-Note"><a href="#CMake-Note" class="headerlink" title="CMake Note"></a>CMake Note</h1><p>官网：<a target="_blank" rel="noopener" href="https://cmake.org/">CMake</a></p>
+<p>官方教材：[Step 1: A Basic Starting Point — CMake 3.25.1 Documentation](<a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/guide/tutorial/A">https://cmake.org/cmake/help/latest/guide/tutorial/A</a> Basic Starting Point.html#exercise-1-building-a-basic-project)</p>
+<p>tutorial文件：cmake-3.25.1-tutorial-source</p>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><p>[toc]</p>
+<h2 id="Build-and-Run"><a href="#Build-and-Run" class="headerlink" title="Build and Run"></a>Build and Run</h2><p>创建build文件夹</p>
+<p><code>mkdir build</code></p>
+<p>进入build文件夹</p>
+<p><code>cd .\build\</code></p>
+<p>运行cmake配置项目并生成原生构建系统</p>
+<p><code>cmake ..</code></p>
+<p>调用构建系统真正编译链接项目</p>
+<p><code>cmake --build .</code></p>
+<p>可执行文件位于build&#x2F;Debug</p>
+<p>[toc]</p>
+<h2 id="Step1-A-Basic-Starting-Point-基础起始部分"><a href="#Step1-A-Basic-Starting-Point-基础起始部分" class="headerlink" title="Step1:A Basic Starting Point 基础起始部分"></a>Step1:A Basic Starting Point 基础起始部分</h2><h3 id="Exe1-Building-a-Basic-Project-基本文件结构"><a href="#Exe1-Building-a-Basic-Project-基本文件结构" class="headerlink" title="Exe1: Building a Basic Project 基本文件结构"></a>Exe1: Building a Basic Project 基本文件结构</h3><p>最基本的CMake项目是从单个源代码文件构建的可执行文件。对于像这样的简单项目，只需要一个带有三个命令的CMakeLists.txt文件。</p>
+<blockquote>
+<p><strong>注意：</strong>尽管 CMake 支持大写、小写和混合大小写命令，但首选小写命令，并将在整个教程中使用。</p>
+</blockquote>
+<blockquote>
+<p>任何项目的最顶层 CMakeLists.txt 必须首先使用指定最低 CMake 版本<a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/cmake_minimum_required.html#command:cmake_minimum_required"><code>cmake_minimum_required()</code></a>命令。</p>
+</blockquote>
+<p>要开始一个项目，我们使用<a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/project.html#command:project"><code>project()</code></a>命令设置项目名称。每个项目都需要此调用，并且应在之后立即调用 <a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/cmake_minimum_required.html#command:cmake_minimum_required"><code>cmake_minimum_required()</code></a>. </p>
+<p>最后，<a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/add_executable.html#command:add_executable"><code>add_executable()</code></a>命令告诉 CMake 使用指定的源代码文件创建可执行文件</p>
+<h4 id="Helpful-Resources"><a href="#Helpful-Resources" class="headerlink" title="Helpful Resources:"></a>Helpful Resources:</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/add_executable.html#command:add_executable"><code>add_executable()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/cmake_minimum_required.html#command:cmake_minimum_required"><code>cmake_minimum_required()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/project.html#command:project"><code>project()</code></a></li>
+</ul>
+<h4 id="Solution"><a href="#Solution" class="headerlink" title="Solution:"></a>Solution:</h4><p>上所述，我们只需要三行CMakeLists.txt就可以启动和运行了。第一行是使用cmake_minimum_required（）设置cmake版本，如下所示：</p>
+<p><code>cmake_minimum_required(VERSION 3.10)</code></p>
+<p>使用project()命令设置项目名:</p>
+<p><code>project(Tutorial)</code></p>
+<p>添加可执行文件以及源文件：</p>
+<p><code>add_executable(Tutorial tutorial.cxx)</code></p>
+<h3 id="Exe2-Specifying-the-C-Standard"><a href="#Exe2-Specifying-the-C-Standard" class="headerlink" title="Exe2 : Specifying the C++ Standard"></a>Exe2 : Specifying the C++ Standard</h3><p>CMake有一些特殊变量，在幕后创建或在项目设置时对CMake有意义，以CMAKE_开头，应避免设置变量时使用，如<code>CMAKE_CXX_STANDARD</code>和<code>CMAKE_CXX _STANDARD_REQUIRED</code>可以用来指定项目所需的C++ 标准</p>
+<h4 id="Helpful-Resources-1"><a href="#Helpful-Resources-1" class="headerlink" title="Helpful Resources:"></a>Helpful Resources:</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/variable/CMAKE_CXX_STANDARD.html#variable:CMAKE_CXX_STANDARD"><code>CMAKE_CXX_STANDARD</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/variable/CMAKE_CXX_STANDARD_REQUIRED.html#variable:CMAKE_CXX_STANDARD_REQUIRED"><code>CMAKE_CXX_STANDARD_REQUIRED</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/set.html#command:set"><code>set()</code></a></li>
+</ul>
+<h4 id="Solution-1"><a href="#Solution-1" class="headerlink" title="Solution:"></a>Solution:</h4><p>添加一个C++11特性：  const double inputValue &#x3D; std::stod(argv[1]);</p>
+<p>remove #include<cstdlib></p>
+<p>设置CMAKE_CXX_STANDARD和CMAKE_CXX_STANDARD_REQUIRED，指定C++版本为11，并</p>
+<p>set(CMAKE_CXX_STANDARD 11)</p>
+<p>set(CMAKE_CXX_STANDARD_REQUIRED True)</p>
+<h3 id="Exe3-Adding-a-Version-Number-and-Configured-Header-File"><a href="#Exe3-Adding-a-Version-Number-and-Configured-Header-File" class="headerlink" title="Exe3: Adding a Version Number and Configured Header File"></a>Exe3: Adding a Version Number and Configured Header File</h3><p>有时在CMakeLists.txt文件中定义的变量在源代码中也可能有用。因此，我们希望添加版本号。</p>
+<p>一个实现方式是使用配置的头文件，我们创建一个输入文件包含多个要替换的变量。这些变量有着特殊语法<code>@VAR@</code>。然后，我们使用<code>configure_file()</code>目录复制给定的输入文件复制到一个输出文件并用CMakelists.txt中VAR的当前值替换。</p>
+<h4 id="Helpful-Resources-2"><a href="#Helpful-Resources-2" class="headerlink" title="Helpful Resources"></a>Helpful Resources</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/variable/PROJECT-NAME_VERSION_MAJOR.html#variable:_VERSION_MAJOR"><code>_VERSION_MAJOR</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/variable/PROJECT-NAME_VERSION_MINOR.html#variable:_VERSION_MINOR"><code>_VERSION_MINOR</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/configure_file.html#command:configure_file"><code>configure_file()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/target_include_directories.html#command:target_include_directories"><code>target_include_directories()</code></a></li>
+</ul>
+<h4 id="Solution-2"><a href="#Solution-2" class="headerlink" title="Solution:"></a>Solution:</h4><p>修改CMakeLists.txt文件，使用project命令设置项目名称和版本号。</p>
+<p><code>project(Tutorial VERSION 1.0)</code></p>
+<p>使用configure_file()命令复制输入文件，并使用CMake中的变量替换</p>
+<p><code>configure_file(TutorialConfig.h.in TutorialConfig.h)</code></p>
+<p>由于配置的文件将被写入项目二进制目录，因此我们必须将该目录添加到路径列表中以搜索包含文件。</p>
+<p>使用target_include_directories()指定可执行模板应在何处查找包含文件</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">target_include_directories</span>(Tutorial PUBLIC</span><br><span class="line">                           <span class="string">&quot;$&#123;PROJECT_BINARY_DIR&#125;&quot;</span></span><br><span class="line">                           )</span><br></pre></td></tr></table></figure>
+
+<p>TutorialConfig.h.in是要配置的输入头文件。当从CMakeLists.txt调用configure_file（）时，@Tutorial_VERSION_MAJOR@和@Tutorial_VERSION_MINOR@的值将替换为TutorialConfig.h中项目的相应版本号。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// the configured options <span class="keyword">and</span> settings for Tutorial</span><br><span class="line"><span class="comment">#define Tutorial_VERSION_MAJOR @Tutorial_VERSION_MAJOR@</span></span><br><span class="line"><span class="comment">#define Tutorial_VERSION_MINOR @Tutorial_VERSION_MINOR@</span></span><br></pre></td></tr></table></figure>
+
+<p>修改tutorial.cxx包含头文件TutorialConfig.h</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;TutorialConfig.h&quot;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>更新tutorial.cxx打印出版本号</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (argc &lt; <span class="number">2</span>) &#123;</span><br><span class="line">  <span class="comment">// report version</span></span><br><span class="line">  std::cout &lt;&lt; argv[<span class="number">0</span>] &lt;&lt; <span class="string">&quot; Version &quot;</span> &lt;&lt; Tutorial_VERSION_MAJOR &lt;&lt; <span class="string">&quot;.&quot;</span></span><br><span class="line">            &lt;&lt; Tutorial_VERSION_MINOR &lt;&lt; std::endl;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;Usage: &quot;</span> &lt;&lt; argv[<span class="number">0</span>] &lt;&lt; <span class="string">&quot; number&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Step2-添加一个链接库"><a href="#Step2-添加一个链接库" class="headerlink" title="Step2: 添加一个链接库"></a>Step2: 添加一个链接库</h2><h3 id="Exe1-创建一个动态链接库"><a href="#Exe1-创建一个动态链接库" class="headerlink" title="Exe1: 创建一个动态链接库"></a>Exe1: 创建一个动态链接库</h3><p>在CMake中使用add_library()命令添加链接库并指定由那些源文件组成。</p>
+<p>我们可以用一个或多个子目录来组织项目，而不是将所有源文件放在一个目录中。我们将为库创建一个子目录。添加一个新的CMakeLists.txt文件和多个源文件。在最高级的CMakeLists.txt文件中，我们使用add_subdirectory()来将子目录添加到构建中。</p>
+<p>一旦创建了库可以使用target_include_directories（）和target_link_libraries（）链接到我们的可执行目标文件</p>
+<h4 id="Helpful-Resources-3"><a href="#Helpful-Resources-3" class="headerlink" title="Helpful Resources"></a>Helpful Resources</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/add_library.html#command:add_library"><code>add_library()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/add_subdirectory.html#command:add_subdirectory"><code>add_subdirectory()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/target_include_directories.html#command:target_include_directories"><code>target_include_directories()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/target_link_libraries.html#command:target_link_libraries"><code>target_link_libraries()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/variable/PROJECT_SOURCE_DIR.html#variable:PROJECT_SOURCE_DIR"><code>PROJECT_SOURCE_DIR</code></a></li>
+</ul>
+<h4 id="Solution-3"><a href="#Solution-3" class="headerlink" title="Solution:"></a>Solution:</h4><p>文件目录</p>
+<p>│  CMakeLists.txt<br>│  tutorial.cxx<br>│  TutorialConfig.h.in<br>│<br>└─MathFunctions		&#x2F;&#x2F; 库文件目录<br>        CMakeLists.txt<br>        MathFunctions.h<br>        mysqrt.cxx</p>
+<p>在库文件目录内的CMakeLists.txt中，创建一个目标库名为MathFunctions使用<code>add_library()</code>命令，并使用参数将源文件添加进入add_library()命令中。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">add_library</span>(MathFunctions mysqrt.cxx)</span><br></pre></td></tr></table></figure>
+
+<p>之后在最顶级CMakeLists.txt使用<code>add_subdirectory()</code>命令指定次级目录。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">add_subdirectory</span>(MathFunctions)</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>target_link_libraries()</code>链接库文件和可执行文件</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">target_link_libraries</span>(Tutorial PUBLIC MathFunctions)</span><br></pre></td></tr></table></figure>
+
+<p>指定库的头文件位置，修改<code>target_include_directories()</code>添加MathFunctions次级目录为一个头文件目录使得MathFunction.h头文件可以被找到。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">target_include_directories</span>(Tutorial PUBLIC</span><br><span class="line">                          <span class="string">&quot;$&#123;PROJECT_BINARY_DIR&#125;&quot;</span></span><br><span class="line">                          <span class="string">&quot;$&#123;PROJECT_SOURCE_DIR&#125;/MathFunctions&quot;</span></span><br><span class="line">                          )</span><br></pre></td></tr></table></figure>
+
+<p>源文件<code>tutorial.cxx</code>中添加头文件</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;MathFunctions.h&quot;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>调用库文件里的函数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">double</span> outputValue = <span class="built_in">mysqrt</span>(inputValue);</span><br></pre></td></tr></table></figure>
+
+<h3 id="Exe2-使我们的库具有分支特性"><a href="#Exe2-使我们的库具有分支特性" class="headerlink" title="Exe2: 使我们的库具有分支特性"></a>Exe2: 使我们的库具有分支特性</h3><p>CMake可以使用<code>option</code>指令来完成分支性。当配置CMake文件的时候，它给予用户一个可更改的变量。这项设置江北存储在缓存中因此用户不必每次运行编译时去设置他们的值。</p>
+<h4 id="Helpful-Resources-4"><a href="#Helpful-Resources-4" class="headerlink" title="Helpful Resources"></a>Helpful Resources</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/if.html#command:if"><code>if()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/list.html#command:list"><code>list()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/option.html#command:option"><code>option()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/configure_file.html#command:configure_file"><code>cmakedefine</code></a></li>
+</ul>
+<h4 id="Solution-4"><a href="#Solution-4" class="headerlink" title="Solution:"></a>Solution:</h4><p>向顶级CMakeLists.txt中添加一个选项，在gui中添加时默认启用，而CMakeLists.txt中不指定时为OFF</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">option</span>(USE_MYMATH <span class="string">&quot;Use tutorial provided math implementation&quot;</span> <span class="keyword">ON</span>)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>option 用法：option(<variable> “<help_text>“ [value])</p>
+<p>不设置value时默认是OFF。</p>
+</blockquote>
+<p>接下来，我们创建一个EXTRA_LIBS和EXTRA_INCLUDE列表变量使其更加具有拓展性。在if语块中，判断USE_MYMATH的值，若为打开状态，则将其添加进入EXTRA_LIBS和EXTRA_INCLUDES中</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(USE_MYMATH)</span><br><span class="line">  <span class="keyword">add_subdirectory</span>(MathFunctions)</span><br><span class="line">  <span class="keyword">list</span>(APPEND EXTRA_LIBS MathFunctions)</span><br><span class="line">  <span class="keyword">list</span>(APPEND EXTRA_INCLUDES <span class="string">&quot;$&#123;PROJECT_SOURCE_DIR&#125;/MathFunctions&quot;</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
+
+<p>使用target_link_libraries和target_includes将EXTRA_LIBS和EXTRA_INCLUDES添加进目标程序内。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">target_link_libraries</span>(Tutorial PUBLIC <span class="variable">$&#123;EXTRA_LIBS&#125;</span>)</span><br><span class="line"><span class="keyword">target_include_directories</span>(Tutorial PUBLIC</span><br><span class="line">                           <span class="string">&quot;$&#123;PROJECT_BINARY_DIR&#125;&quot;</span></span><br><span class="line">                           <span class="variable">$&#123;EXTRA_INCLUDES&#125;</span></span><br><span class="line">                           )</span><br></pre></td></tr></table></figure>
+
+<p>在头文件内添加判断语句</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span> USE_MYMATH</span></span><br><span class="line"><span class="meta">#  <span class="keyword">include</span> <span class="string">&quot;MathFunctions.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>在源代码中添加判断语句</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span> USE_MYMATH</span></span><br><span class="line">  <span class="type">const</span> <span class="type">double</span> outputValue = <span class="built_in">mysqrt</span>(inputValue);</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">  <span class="type">const</span> <span class="type">double</span> outputValue = <span class="built_in">sqrt</span>(inputValue);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>在配置文件内添加cmakedefine来给USE_MYMATH赋值。、</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#cmakedefine USE_MYMATH</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Step3-为链接库添加使用要求"><a href="#Step3-为链接库添加使用要求" class="headerlink" title="Step3 为链接库添加使用要求"></a>Step3 为链接库添加使用要求</h2><h3 id="Exe1-为链接库添加使用要求"><a href="#Exe1-为链接库添加使用要求" class="headerlink" title="Exe1: 为链接库添加使用要求"></a>Exe1: 为链接库添加使用要求</h3><p>目标参数的要求允许我们队库或可执行文件和include行进行更好的控制，同时也可以对CMake中目标的传递属性进行更多的控制，利用使用要求的主要命令有：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/target_compile_definitions.html#command:target_compile_definitions"><code>target_compile_definitions()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/target_compile_options.html#command:target_compile_options"><code>target_compile_options()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/target_include_directories.html#command:target_include_directories"><code>target_include_directories()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/target_link_directories.html#command:target_link_directories"><code>target_link_directories()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/target_link_options.html#command:target_link_options"><code>target_link_options()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/target_precompile_headers.html#command:target_precompile_headers"><code>target_precompile_headers()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/target_sources.html#command:target_sources"><code>target_sources()</code></a></li>
+</ul>
+<p>在本练习中，我们将从添加库中重构代码，使用现代CMake方法，将从我们的库中定义自己的使用要求，以便根据需要将他们传递给其他目标。在这种情况下，MathFunction将自己指定任何需要的include目录，然后，目标Tutorial只需要链接到MathFunction而不必担心任何额外的include目录。</p>
+<h4 id="Solution-5"><a href="#Solution-5" class="headerlink" title="Solution:"></a>Solution:</h4><p>我们希望什么，任何链接到MathFunction的人都需要包含当前源目录，而MathFunction本身则不包含，这可以通过<code>INTERFACE</code>使用需求来表示，INTERFACE是指消费者需要但生产者不需要的东西</p>
+<p>在MathFunctions&#x2F;CMakeLists.txt的借位，使用<code>target_include_directories</code>和<code>INTERFACE</code>关键字，</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">target_include_directories</span>(MathFunctions</span><br><span class="line">          INTERFACE <span class="variable">$&#123;CMAKE_CURRENT_SOURCE_DIR&#125;</span></span><br><span class="line">          )</span><br></pre></td></tr></table></figure>
+
+<p>接下来，移除顶层CMake中的EXTRA_INCLUDES和target_include_directories。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(USE_MYMATH)</span><br><span class="line">  <span class="keyword">add_subdirectory</span>(MathFunctions)</span><br><span class="line">  <span class="keyword">list</span>(APPEND EXTRA_LIBS MathFunctions)</span><br><span class="line"><span class="keyword">endif</span>()</span><br><span class="line"><span class="keyword">target_include_directories</span>(Tutorial PUBLIC</span><br><span class="line">                           <span class="string">&quot;$&#123;PROJECT_BINARY_DIR&#125;&quot;</span></span><br><span class="line">                           )</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Step4-添加生成表达式-generator-expressions"><a href="#Step4-添加生成表达式-generator-expressions" class="headerlink" title="Step4: 添加生成表达式 generator expressions"></a>Step4: 添加生成表达式 generator expressions</h2><h3 id="Exe1-通过Interface-Libraries设置C-标准"><a href="#Exe1-通过Interface-Libraries设置C-标准" class="headerlink" title="Exe1: 通过Interface Libraries设置C++标准"></a>Exe1: 通过Interface Libraries设置C++标准</h3><p>generator expressions 在构建系统生成期间进行求值，以生成特定于每个构建配置的信息。</p>
+<p>generator expressions在许多目标属性的上下文中被允许使用，比如LINK_LIBRARIES, INCLUDE_DIRECTORIES, COMPILE_DEFINITIONS或其他，当使用命令来生成这些属性时也被允许使用，比如target_link_libraries(), target_include_directories, target_compile_definitions() and others。</p>
+<p> generator expressions也被用于启用条件链接，编译时进行条件定义，条件包含目录等。这些条件可能基于构建配置，目标属性，平台信息或其他可查询的信息。</p>
+<p>有不同类型的生成器表达式，包括逻辑不表达式、信息表达式或输出表达式。</p>
+<p>逻辑表达式由于生成条件输出，这些基础表达式是01表达式，A <code>$&lt;0:..&gt;</code>结果对应空字符串，<code>&lt;1:...&gt;</code>结果对于内容，可以嵌套。</p>
+<h4 id="Helpful-Resources-5"><a href="#Helpful-Resources-5" class="headerlink" title="Helpful Resources"></a>Helpful Resources</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/add_library.html#command:add_library"><code>add_library()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/target_compile_features.html#command:target_compile_features"><code>target_compile_features()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/command/target_link_libraries.html#command:target_link_libraries"><code>target_link_libraries()</code></a></li>
+</ul>
+<h4 id="Solution-6"><a href="#Solution-6" class="headerlink" title="Solution"></a>Solution</h4><p>首先我们对上一步中的代码进行更新使用interface libraries来设置 C++ 依赖</p>
+<p>一开始时，移除两个设置CMAKE_CXX_STANDARD和CMAKE_CXX_STANDARD_REQUIRED变量的语句。</p>
+<p>接下来，我们需要创建一个接口库，<code>tutorial_compiler_flags</code>，之后使用target_compile_features()来添加编译选项cxx_std_11。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">add_library</span>(tutorial_compiler_flags INTERFACE)</span><br><span class="line"><span class="keyword">target_compile_features</span>(tutorial_compiler_flags INTERFACE cxx_std_11)</span><br></pre></td></tr></table></figure>
+
+<p>最终，由于我们的interface library被设置，我们需要链接可执行文件Target和MathFunctions库到我们新tutorial_compiler_flags库，代码如下图所示</p>
+<p>CMakeLists.txt:</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">target_link_libraries</span>(Tutorial PUBLIC <span class="variable">$&#123;EXTRA_LIBS&#125;</span> tutorial_compiler_flags)</span><br></pre></td></tr></table></figure>
+
+<p>MathFunctions&#x2F;CMakeLists.txt:</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">target_link_libraries</span>(MathFunctions tutorial_compiler_flags)</span><br></pre></td></tr></table></figure>
+
+<p>这样我们的代码都可以依赖 C++ 11来构建，注意到通过这种方法，我们代码的标准只有一个接口源。</p>
+<h3 id="Exp2-通过Generator-Expressions添加编译器警告标志"><a href="#Exp2-通过Generator-Expressions添加编译器警告标志" class="headerlink" title="Exp2: 通过Generator Expressions添加编译器警告标志"></a>Exp2: 通过Generator Expressions添加编译器警告标志</h3><p>Generator Expressions 的一个常见用法是有条件地添加编译器标志，比如语言级别或警告的标志，一种很好的模式是将这些信息和允许传播该信息的INTERFACE目标相关联。</p>
+<h4 id="Solution-7"><a href="#Solution-7" class="headerlink" title="Solution:"></a>Solution:</h4><p>首先更新所需的CMake最低版本位3.15:</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.15</span>)</span><br></pre></td></tr></table></figure>
+
+<p>接下来，我们确定我们的系统当前正在使用哪个编译器进行编译，因为编译器不同警告标志也会不同。这是通过使用<code>COMPILE_LANG_AND_ID</code>生成器表达式来完成的，我们在变量<code>gcc_like_cxx</code>和<code>msvc_cxx</code>变量中设置结果</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(gcc_like_cxx <span class="string">&quot;$&lt;COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC&gt;&quot;</span>)</span><br><span class="line"><span class="keyword">set</span>(msvc_cxx <span class="string">&quot;$&lt;COMPILE_LANG_AND_ID:CXX,MSVC&gt;&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>之后，为我们的项目添加所需的编译器警告标志，使用我们的变量gcc_like_cxx和msvc_cxx。我们可以使用另一个生成器表达式，仅当变量位ture时才使用相应的标志，我们使用target_compile_options()将这些标志应用于接口库。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">target_compile_options</span>(tutorial_compiler_flags INTERFACE</span><br><span class="line">  <span class="string">&quot;$&lt;$&#123;gcc_like_cxx&#125;:-Wall;-Wextra;-Wshadow;-Wformat=2;-Wunused&gt;&quot;</span></span><br><span class="line">  <span class="string">&quot;$&lt;$&#123;msvc_cxx&#125;:-W3&gt;&quot;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>最后，我们只希望在构建期间使用这些警告标志，我们已安装项目的使用者不应继承我们的警告标志。为此，我们使用BUILD_INTERFACE条件将标志包装在生成器表达式中。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">target_compile_options</span>(tutorial_compiler_flags INTERFACE</span><br><span class="line">  <span class="string">&quot;$&lt;$&#123;gcc_like_cxx&#125;:$&lt;BUILD_INTERFACE:-Wall;-Wextra;-Wshadow;-Wformat=2;-Wunused&gt;&gt;&quot;</span></span><br><span class="line">  <span class="string">&quot;$&lt;$&#123;msvc_cxx&#125;:$&lt;BUILD_INTERFACE:-W3&gt;&gt;&quot;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Step5-安装与测试"><a href="#Step5-安装与测试" class="headerlink" title="Step5: 安装与测试"></a>Step5: 安装与测试</h2><h3 id="Exe1：安装规则"><a href="#Exe1：安装规则" class="headerlink" title="Exe1：安装规则"></a>Exe1：安装规则</h3><p>通常，仅仅构建一个可执行文件是不够的，它还应该是可安装的。使用CMake，我们可以使用<code>install()</code>命令指定安装规则。在CMake中支持构建的本地安装与指定安装位置以及要安装的目标和文件一样简单。</p>
+<h4 id="Solution："><a href="#Solution：" class="headerlink" title="Solution："></a>Solution：</h4><p>项目的安装规则</p>
+<ul>
+<li>对于MathFunctions库，我们希望分别安装库和头文件到lib和include directories。</li>
+<li>对于可执行文件Tutroial可执行程序，我们希望将可执行文件和配置文件的头文件分别安装到bin和include目录中。</li>
+</ul>
+<p>因此在MathFunctions目录下的CMakeLists.txt中指定库和头文件安装目录。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(installable_libs MathFunctions tutorial_compiler_flags)</span><br><span class="line"><span class="keyword">install</span>(TARGETS <span class="variable">$&#123;installable_libs&#125;</span> DESTINATION lib)</span><br><span class="line"><span class="keyword">install</span>(FILES MathFunctions.h DESTINATION <span class="keyword">include</span>)</span><br></pre></td></tr></table></figure>
+
+<p>接下来在顶级CMakeLists.txt目录下指定可执行文件和配置文件的头文件安装目录。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">install</span>(TARGETS Tutorial DESTINATION bin)</span><br><span class="line"><span class="keyword">install</span>(FILES <span class="string">&quot;$&#123;PROJECT_BINARY_DIR&#125;/TutorialConfig.h&quot;</span></span><br><span class="line">  DESTINATION <span class="keyword">include</span></span><br><span class="line">  )</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://blog.icathianrain.me">IcathianRain</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.icathianrain.me/2023/07/24/cmake-tutorial/">https://blog.icathianrain.me/2023/07/24/cmake-tutorial/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.icathianrain.me" target="_blank">IcathianRain's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/CMake/">CMake</a></div><div class="post_share"><div class="social-share" data-image="/images/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/07/24/vmware-tools/" title="vmware_tools"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">vmware_tools</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">IcathianRain</div><div class="author-info__description">我是天选，也是唯一。</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/2205794866"><i class="fab fa-github"></i><span>关注</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/2205794866" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://space.bilibili.com/47310416" target="_blank" title="Bilibili"><i class="iconfont icon-bilibili" style="color: #20B0E3;"></i></a><a class="social-icon" href="mailto:2205794866@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CMake-Note"><span class="toc-number">1.</span> <span class="toc-text">CMake Note</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95"><span class="toc-number">1.1.</span> <span class="toc-text">目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Build-and-Run"><span class="toc-number">1.2.</span> <span class="toc-text">Build and Run</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Step1-A-Basic-Starting-Point-%E5%9F%BA%E7%A1%80%E8%B5%B7%E5%A7%8B%E9%83%A8%E5%88%86"><span class="toc-number">1.3.</span> <span class="toc-text">Step1:A Basic Starting Point 基础起始部分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Exe1-Building-a-Basic-Project-%E5%9F%BA%E6%9C%AC%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84"><span class="toc-number">1.3.1.</span> <span class="toc-text">Exe1: Building a Basic Project 基本文件结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Helpful-Resources"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">Helpful Resources:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Solution"><span class="toc-number">1.3.1.2.</span> <span class="toc-text">Solution:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Exe2-Specifying-the-C-Standard"><span class="toc-number">1.3.2.</span> <span class="toc-text">Exe2 : Specifying the C++ Standard</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Helpful-Resources-1"><span class="toc-number">1.3.2.1.</span> <span class="toc-text">Helpful Resources:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Solution-1"><span class="toc-number">1.3.2.2.</span> <span class="toc-text">Solution:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Exe3-Adding-a-Version-Number-and-Configured-Header-File"><span class="toc-number">1.3.3.</span> <span class="toc-text">Exe3: Adding a Version Number and Configured Header File</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Helpful-Resources-2"><span class="toc-number">1.3.3.1.</span> <span class="toc-text">Helpful Resources</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Solution-2"><span class="toc-number">1.3.3.2.</span> <span class="toc-text">Solution:</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Step2-%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E9%93%BE%E6%8E%A5%E5%BA%93"><span class="toc-number">1.4.</span> <span class="toc-text">Step2: 添加一个链接库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Exe1-%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93"><span class="toc-number">1.4.1.</span> <span class="toc-text">Exe1: 创建一个动态链接库</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Helpful-Resources-3"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">Helpful Resources</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Solution-3"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">Solution:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Exe2-%E4%BD%BF%E6%88%91%E4%BB%AC%E7%9A%84%E5%BA%93%E5%85%B7%E6%9C%89%E5%88%86%E6%94%AF%E7%89%B9%E6%80%A7"><span class="toc-number">1.4.2.</span> <span class="toc-text">Exe2: 使我们的库具有分支特性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Helpful-Resources-4"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">Helpful Resources</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Solution-4"><span class="toc-number">1.4.2.2.</span> <span class="toc-text">Solution:</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Step3-%E4%B8%BA%E9%93%BE%E6%8E%A5%E5%BA%93%E6%B7%BB%E5%8A%A0%E4%BD%BF%E7%94%A8%E8%A6%81%E6%B1%82"><span class="toc-number">1.5.</span> <span class="toc-text">Step3 为链接库添加使用要求</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Exe1-%E4%B8%BA%E9%93%BE%E6%8E%A5%E5%BA%93%E6%B7%BB%E5%8A%A0%E4%BD%BF%E7%94%A8%E8%A6%81%E6%B1%82"><span class="toc-number">1.5.1.</span> <span class="toc-text">Exe1: 为链接库添加使用要求</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Solution-5"><span class="toc-number">1.5.1.1.</span> <span class="toc-text">Solution:</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Step4-%E6%B7%BB%E5%8A%A0%E7%94%9F%E6%88%90%E8%A1%A8%E8%BE%BE%E5%BC%8F-generator-expressions"><span class="toc-number">1.6.</span> <span class="toc-text">Step4: 添加生成表达式 generator expressions</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Exe1-%E9%80%9A%E8%BF%87Interface-Libraries%E8%AE%BE%E7%BD%AEC-%E6%A0%87%E5%87%86"><span class="toc-number">1.6.1.</span> <span class="toc-text">Exe1: 通过Interface Libraries设置C++标准</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Helpful-Resources-5"><span class="toc-number">1.6.1.1.</span> <span class="toc-text">Helpful Resources</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Solution-6"><span class="toc-number">1.6.1.2.</span> <span class="toc-text">Solution</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Exp2-%E9%80%9A%E8%BF%87Generator-Expressions%E6%B7%BB%E5%8A%A0%E7%BC%96%E8%AF%91%E5%99%A8%E8%AD%A6%E5%91%8A%E6%A0%87%E5%BF%97"><span class="toc-number">1.6.2.</span> <span class="toc-text">Exp2: 通过Generator Expressions添加编译器警告标志</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Solution-7"><span class="toc-number">1.6.2.1.</span> <span class="toc-text">Solution:</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Step5-%E5%AE%89%E8%A3%85%E4%B8%8E%E6%B5%8B%E8%AF%95"><span class="toc-number">1.7.</span> <span class="toc-text">Step5: 安装与测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Exe1%EF%BC%9A%E5%AE%89%E8%A3%85%E8%A7%84%E5%88%99"><span class="toc-number">1.7.1.</span> <span class="toc-text">Exe1：安装规则</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Solution%EF%BC%9A"><span class="toc-number">1.7.1.1.</span> <span class="toc-text">Solution：</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/24/cmake-tutorial/" title="cmake_tutorial">cmake_tutorial</a><time datetime="2023-07-24T09:46:33.000Z" title="发表于 2023-07-24 09:46:33">2023-07-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/24/vmware-tools/" title="vmware_tools">vmware_tools</a><time datetime="2023-07-24T09:46:33.000Z" title="发表于 2023-07-24 09:46:33">2023-07-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/24/hello-world/" title="Hello World">Hello World</a><time datetime="2023-07-24T01:51:23.099Z" title="发表于 2023-07-24 01:51:23">2023-07-24</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By IcathianRain</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
