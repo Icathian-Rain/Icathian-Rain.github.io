@@ -1,6 +1,8 @@
 ---
 title: Faster RCNN 源码解析
-tags: AI FasterRCNN 
+tags: 
+    - AI
+    - FasterRCNN 
 date: 2023-07-26 10:46:33
 categories: Knowledge
 ---
