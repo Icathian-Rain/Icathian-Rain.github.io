@@ -30,7 +30,7 @@ code_word_wrap: false
 # formal:
 #   icon: link || the description || color
 social:
-  fab fa-github: https://github.com/2205794866 || Github || '#24292e'
+  fab fa-github: https://github.com/Icathian-Rain || Github || '#24292e'
   iconfont icon-bilibili: https://space.bilibili.com/47310416 || Bilibili || '#20B0E3'
   fas fa-envelope: mailto:2205794866@qq.com || Email || '#4a7dbe'
   
@@ -231,7 +231,7 @@ aside:
       enable: true
       icon: fab fa-github
       text: 关注
-      link: https://github.com/2205794866
+      link: https://github.com/Icathian-Rain
   card_announcement:
     enable: false
     content: This is my Blog
