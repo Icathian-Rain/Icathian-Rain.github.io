@@ -23,7 +23,7 @@ Github仓库 [open-mmlab/mmdetection: OpenMMLab Detection Toolbox and Benchmark 
 
 在[Model Zoo](https://mmdetection.readthedocs.io/en/latest/model_zoo.html)中找到你需要的检测模型
 
-![image-20230726161053188](C:\Users\22057\Documents\Code\Icathian-Rain.github.io\source\_posts\mmdetection\image-20230726161053188.png)
+![image-20230726161053188](mmdetection/image-20230726161053188.png)
 
 Faster R-CNN 的model zoo位于[mmdetection/configs/faster_rcnn at main · open-mmlab/mmdetection (github.com)](https://github.com/open-mmlab/mmdetection/tree/main/configs/faster_rcnn)
 
