@@ -18,5 +18,6 @@ date: 2023-07-29 22:47:23
 	server="tencent"
 	type="playlist"
 	id="8976385915"
-    local="true">
+    local="true"
+    path="/music/">
 </meting-js>
