@@ -899,9 +899,14 @@ css_prefix: true
 inject:
   head:
     - <link rel="stylesheet" href="//at.alicdn.com/t/c/font_4179705_k5qmnhfql49.css">
+    - <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css"/>
+    - <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+    - <script src="/js/Meting.min"></script>
     
   bottom:
     # - <script src="xxxx"></script>
+    - <script> var meting_api='https://api.injahow.cn/meting/?server=:server&type=:type&id=:id&auth=:auth&r=:r';</script>
+    - <meting-js server="tencent" type="playlist" id="8976385915" local="true" fixed="true" path="/music/"></meting-js>
 
 # CDN
 # Don't modify the following settings unless you know how they work
