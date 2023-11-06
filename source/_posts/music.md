@@ -132,32 +132,24 @@ for file in files:
 
 # 2. Meting JS 配置
 
-## 2.1 修改Meting JS源码
+## 2.1 获取Meting JS
 
-从[MetingJS](https://github.com/metowolf/MetingJS)的github仓库，克隆其源码，修改/source/Meting.js
+本人对原版MetingJS进行了修改，见[仓库](https://github.com/Icathian-Rain/MetingJS)
 
-103行开始
+增加了两个配置选项:
 
-```javascript
-fetch(url)
-      .then(res => res.json())
-      .then(result => {
-        // 修改歌曲地址为本地地址
-        let base_url = "/music/"
-        result.forEach(song => {
-            let artist = song.artist;
-            // 将/替换为 _ 
-            artist = artist.replace(/\//g, " _ ");
-            // song.url = base_url + artist + " - " + song.name + ".mp3";
-            song.url = base_url + artist + " - " + song.name + ".mp3";
-        });
-        this._loadPlayer(result)
-    })
+| option | default | description          |
+| ------ | ------- | -------------------- |
+| local  | false   | 是否使用本地资源文件 |
+| path   | ""      | 本地资源文件路径     |
+
+clone仓库:
+
+```bash
+git clone https://github.com/Icathian-Rain/MetingJS.git
 ```
 
-![image-20230730111116486](music/image-20230730111116486.png)
-
-修改完成后进行build 
+进行build 
 
 ```shell
 npm install
@@ -166,7 +158,7 @@ npm run build
 
 ## 2.2 部署Meting.min.js
 
-将build完成的Meting.min.js（位于/dist/Meting.min.js)移动至blog项目中，移动到/source/js/ Meting.min.js
+将build完成的Meting.min.js（位于/dist/Meting.min.js)移动至blog项目中，移动到/source/js/Meting.min.js
 
 # 3 部署
 
@@ -182,11 +174,7 @@ npm run build
 插入meting相关js
 
 ```html
-<script >
-    "use strict";function ownKeys(a,b){var c=Object.keys(a);if(Object.getOwnPropertySymbols){var d=Object.getOwnPropertySymbols(a);b&&(d=d.filter(function(b){return Object.getOwnPropertyDescriptor(a,b).enumerable})),c.push.apply(c,d)}return c}function _objectSpread(a){for(var b,c=1;c<arguments.length;c++)b=null==arguments[c]?{}:arguments[c],c%2?ownKeys(Object(b),!0).forEach(function(c){_defineProperty(a,c,b[c])}):Object.getOwnPropertyDescriptors?Object.defineProperties(a,Object.getOwnPropertyDescriptors(b)):ownKeys(Object(b)).forEach(function(c){Object.defineProperty(a,c,Object.getOwnPropertyDescriptor(b,c))});return a}function _defineProperty(a,b,c){return b=_toPropertyKey(b),b in a?Object.defineProperty(a,b,{value:c,enumerable:!0,configurable:!0,writable:!0}):a[b]=c,a}function _toPropertyKey(a){var b=_toPrimitive(a,"string");return"symbol"==typeof b?b:b+""}function _toPrimitive(a,b){if("object"!=typeof a||null===a)return a;var c=a[Symbol.toPrimitive];if(c!==void 0){var d=c.call(a,b||"default");if("object"!=typeof d)return d;throw new TypeError("@@toPrimitive must return a primitive value.")}return("string"===b?String:Number)(a)}class MetingJSElement extends HTMLElement{connectedCallback(){window.APlayer&&window.fetch&&(this._init(),this._parse())}disconnectedCallback(){this.lock||this.aplayer.destroy()}_camelize(a){return a.replace(/^[_.\- ]+/,"").toLowerCase().replace(/[_.\- ]+(\w|$)/g,(a,b)=>b.toUpperCase())}_init(){for(var a={},b=0;b<this.attributes.length;b+=1)a[this._camelize(this.attributes[b].name)]=this.attributes[b].value;var c=["server","type","id","api","auth","auto","lock","name","title","artist","author","url","cover","pic","lyric","lrc"];this.meta={};for(var d,e=0,f=c;e<f.length;e++)d=f[e],this.meta[d]=a[d],delete a[d];this.config=a,this.api=this.meta.api||window.meting_api||"https://api.i-meto.com/meting/api?server=:server&type=:type&id=:id&r=:r",this.meta.auto&&this._parse_link()}_parse_link(){for(var a=[["music.163.com.*song.*id=(\\d+)","netease","song"],["music.163.com.*album.*id=(\\d+)","netease","album"],["music.163.com.*artist.*id=(\\d+)","netease","artist"],["music.163.com.*playlist.*id=(\\d+)","netease","playlist"],["music.163.com.*discover/toplist.*id=(\\d+)","netease","playlist"],["y.qq.com.*song/(\\w+).html","tencent","song"],["y.qq.com.*album/(\\w+).html","tencent","album"],["y.qq.com.*singer/(\\w+).html","tencent","artist"],["y.qq.com.*playsquare/(\\w+).html","tencent","playlist"],["y.qq.com.*playlist/(\\w+).html","tencent","playlist"],["xiami.com.*song/(\\w+)","xiami","song"],["xiami.com.*album/(\\w+)","xiami","album"],["xiami.com.*artist/(\\w+)","xiami","artist"],["xiami.com.*collect/(\\w+)","xiami","playlist"]],b=0,c=a;b<c.length;b++){var d=c[b],e=new RegExp(d[0]),f=e.exec(this.meta.auto);if(null!==f)return this.meta.server=d[1],this.meta.type=d[2],void(this.meta.id=f[1])}}_parse(){if(this.meta.url){var a={name:this.meta.name||this.meta.title||"Audio name",artist:this.meta.artist||this.meta.author||"Audio artist",url:this.meta.url,cover:this.meta.cover||this.meta.pic,lrc:this.meta.lrc||this.meta.lyric||"",type:this.meta.type||"auto"};return a.lrc||(this.meta.lrcType=0),this.innerText&&(a.lrc=this.innerText,this.meta.lrcType=2),void this._loadPlayer([a])}var b=this.api.replace(":server",this.meta.server).replace(":type",this.meta.type).replace(":id",this.meta.id).replace(":auth",this.meta.auth).replace(":r",Math.random());fetch(b).then(a=>a.json()).then(a=>{a.forEach(a=>{var b=a.artist;b=b.replace(/\//g," _ "),a.url="/music/"+b+" - "+a.name+".mp3"}),this._loadPlayer(a)})}_loadPlayer(a){var b={audio:a,mutex:!0,lrcType:this.meta.lrcType||3,storageName:"metingjs"};if(a.length){var c=_objectSpread(_objectSpread({},b),this.config);for(var d in c)("true"===c[d]||"false"===c[d])&&(c[d]="true"===c[d]);var e=document.createElement("div");c.container=e,this.appendChild(e),this.aplayer=new APlayer(c)}}}console.log("\n %c MetingJS v2.0.1 %c https://github.com/metowolf/MetingJS \n","color: #fadfa3; background: #030307; padding:5px 0;","background: #fadfa3; padding:5px 0;"),window.customElements&&!window.customElements.get("meting-js")&&(window.MetingJSElement=MetingJSElement,window.customElements.define("meting-js",MetingJSElement));
-
-</script>
-
+<script src="/js/Meting.min"></script>
 <script>
     // 自定义 meting_api
     var meting_api='https://api.injahow.cn/meting/?server=:server&type=:type&id=:id&auth=:auth&r=:r';
@@ -199,8 +187,9 @@ npm run build
 <meting-js
 	server="tencent"
 	type="playlist"
-	id="8976385915">
+	id="8976385915"
+    local="true"
+    path="/music/">
 </meting-js>
-
 ```
 
