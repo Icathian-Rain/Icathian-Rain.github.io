@@ -136,12 +136,11 @@ for file in files:
 
 本人对原版MetingJS进行了修改，见[仓库](https://github.com/Icathian-Rain/MetingJS)
 
-增加了两个配置选项:
+增加了配置选项:
 
 | option | default | description          |
 | ------ | ------- | -------------------- |
-| local  | false   | 是否使用本地资源文件 |
-| path   | ""      | 本地资源文件路径     |
+| path   | ""      | 资源文件夹路径     |
 
 clone仓库:
 
@@ -174,7 +173,7 @@ npm run build
 插入meting相关js
 
 ```html
-<script src="/js/Meting.min"></script>
+<script src="https://fqh.yllhwa.com/js/Meting.min.js"></script>
 <script>
     // 自定义 meting_api
     var meting_api='https://api.injahow.cn/meting/?server=:server&type=:type&id=:id&auth=:auth&r=:r';
@@ -188,8 +187,7 @@ npm run build
 	server="tencent"
 	type="playlist"
 	id="8976385915"
-    local="true"
-    path="/music/">
+    path="https://fqh.yllhwa.com/music/">
 </meting-js>
 ```
 
