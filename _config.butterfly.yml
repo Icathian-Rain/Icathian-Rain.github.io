@@ -906,7 +906,7 @@ inject:
   bottom:
     # - <script src="xxxx"></script>
     - <script> var meting_api='https://api.injahow.cn/meting/?server=:server&type=:type&id=:id&auth=:auth&r=:r';</script>
-    - <meting-js server="tencent" type="playlist" id="8976385915" fixed="true" path="https://fqh.yllhwa.com/music/"></meting-js>
+    - <meting-js server="tencent" type="playlist" id="9070810982" fixed="true" path="https://fqh.yllhwa.com/music/"></meting-js>
 
 # CDN
 # Don't modify the following settings unless you know how they work
