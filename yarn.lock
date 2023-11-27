@@ -1144,9 +1144,9 @@ hexo-tag-aplayer@^3.0.4:
     hexo-util "^0.1.7"
     meting "^1.2.0"
 
-hexo-theme-butterfly@^4.10.0:
-  version "4.10.0"
-  resolved "https://registry.yarnpkg.com/hexo-theme-butterfly/-/hexo-theme-butterfly-4.10.0.tgz#2e4c52cc4dd5c463620e4b096ae5bed08310d3db"
+hexo-theme-butterfly@^4.11.0:
+  version "4.11.0"
+  resolved "https://registry.yarnpkg.com/hexo-theme-butterfly/-/hexo-theme-butterfly-4.11.0.tgz#ee67e2fd7331be32d1ae08287dfab4598eec9fe6"
   dependencies:
     hexo-renderer-pug "^3.0.0"
     hexo-renderer-stylus "^3.0.0"
