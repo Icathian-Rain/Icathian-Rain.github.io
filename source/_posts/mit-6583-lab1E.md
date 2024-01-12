@@ -1,82 +1,20 @@
 ---
-title: mit 6583 lab1
-date: 2023-12-26 22:19:02
+title: mit 6583 lab1E
+date: 2024-01-12 11:32:40
 tags: 
 - golang
 - databases
 categories: Knowledge
 ---
-
-# 简介
-
-> In the lab assignments in 6.5830/6.5831 you will write a basic database
-> management system called GoDB. For this lab, you will focus on implementing
-> the core modules required to access stored data on disk; in future labs, you
-> will add support for various query processing operators, as well as
-> transactions, locking, and concurrent queries.
-
-在 6.5830/6.5831 的实验作业中，您将编写一个基本数据库管理系统称为GoDB。在本实验中，您将专注于实施访问磁盘上存储的数据所需的核心模块；在未来的实验室中，你将添加对各种查询处理运算符的支持，以及事务、锁定和并发查询。
-:::info
-接下来是对GODB的简介，使用GO来替代往年的JAVA项目，介绍GO的使用与test，在此不再赘述。
-:::
-**以下是您可以继续使用 GoDB 的一种方法的粗略概述执行**
-
-> - We have provided you with a set of core types and interfaces in `types.go`.  Review these as you will need to use them.
-> - Implement the missing functions in `tuple.go`.  These methods allow you to compare tuples and tuple descriptors.
-> - Implement the `buffer_pool.go` constructor and the `GetPage()` method.  You can ignore the transaction methods for lab 1.
-> - Implement the missing methods in `heap_file.go` and `heap_page.go`.
->   These allow you to create heap files, insert and delete records from them,
->   and iterate through them.  Some of the methods have already been written for you.
-> - At this point, you should be able to pass the `lab1_query_test.go` test, which isthe goal for this lab.
-
-- 在 `types.go` 中定义了一些核心类型与接口
-- 实现`tuple.go`中的方法，这些方法用来比较tuples与tuple descriptors
-- 在 `buffer_pool.go` 中实现构造函数与 GetPage()函数
-- 实现 `heap_file.go` 和 `heap_page.go` 中实现方法，这些方法用来创建heap files, 插入和删除records 与迭代。
-- 通过 `lab1_query_test.db` 测试
-
-GoDB 有以下几部分组成
-
-> - Structures that represent fields, tuples, and tuple schemas;
-> - Methods that apply predicates and conditions to tuples;
-> - One or more access methods (e.g., heap files) that store relations on disk and
->   provide a way to iterate through tuples of those relations;
-> - A collection of operator classes (e.g., select, join, insert, delete, etc.)
->   that process tuples;
-> - A buffer pool that caches active tuples and pages in memory and handles
->   concurrency control and transactions (neither of which you need to worry about
->   for this lab); and,
-> - A catalog that stores information about available tables and their schemas.
-
-表示字段、元组和元组模式的结构；
-将谓词和条件应用于元组的方法；
-一种或多种访问方法（如堆文件），用于在磁盘上存储关系，并提供一种迭代这些关系的元组的方法；运算符类的集合（如select、join、insert、delete等）处理元组；
-一个缓冲池，用于在内存中缓存活动元组和页面并处理它们。
-并发控制和事务（两者都不需要担心）对于这个实验室）；
-以及一个用于存储有关可用表及其模式的信息的目录。
-
-# Fields and Tuples
-
-> The Tuple struct in GoDB is used to store the in-memory value of a database tuple.
-> They consist of a collection of fields implementing the DBValue interface. Different data types (e.g., IntField, StringField) implement DBValue. Tuple objects are created by the underlying access methods (e.g., heap files, or B-trees), as described in the next section. Tuples also have a type (or schema), called a tuple descriptor, represented by a TupleDesc struct, which consists of a collection of FieldType objects, one per field in the tuple, each of which describes the type of the corresponding field.
-
-GoDB中的Tuple结构用于存储数据库元组的内存值。
-它们由实现DBValue接口的一组字段组成。
-不同的数据类型(例如，Intfield、Stringfield)实现DBValue。
-元组对象由底层访问方法(例如，堆文件或B树)创建，如下一节所述。
-元组还有一个类型(或架构)，称为元组描述符，由TupleDesc结构表示，该结构由一组FieldType对象组成，元组中的每个字段一个，每个对象描述相应字段的类型。
-
+GODB的Lab1习题
 # Exercise 1
-
 ## Q：
-
 > tuple.go
 > At this point, your code should pass the unit tests in tuple_test.go.
 
+此时，您的代码应该通过 tuple_test.go 中的单元测试。 
 ## TupleDesc 
-
 类型FileType
-
 ```go
 // FieldType is the type of a field in a tuple, e.g., its name, table, and [godb.DBType].
 // TableQualifier may or may not be an emtpy string, depending on whether the table
@@ -87,20 +25,15 @@ type FieldType struct {
     Ftype          DBType
 }
 ```
-
 类型 TupleDesc
-
 ```go
 // TupleDesc is "type" of the tuple, e.g., the field names and types
 type TupleDesc struct {
 	Fields []FieldType
 }
 ```
-
 TupleDesc 由一个FieldType切片组成，描述Tuple中数据的名称，Table名与类型
-
 ## TupleDesc.equals 方法
-
 ```go
 // Compare two tuple descs, and return true iff
 // all of their field objects are equal and they
@@ -125,11 +58,8 @@ func (d1 *TupleDesc) equals(d2 *TupleDesc) bool {
 
 }
 ```
-
 比较d1 和 d2 是否相同
-
 ## TupleDesc.copy 方法
-
 ```go
 // Make a copy of a tuple desc.  Note that in go, assignment of a slice to
 // another slice object does not make a copy of the contents of the slice.
@@ -143,11 +73,8 @@ func (td *TupleDesc) copy() *TupleDesc {
 	return &TupleDesc{Fields: fields} //replace me
 }
 ```
-
 将 td 拷贝一份并返回
-
 ## TupleDesc.merge 方法
-
 ```go
 // Merge two TupleDescs together.  The resulting TupleDesc
 // should consist of the fields of desc2
@@ -165,11 +92,8 @@ func (desc *TupleDesc) merge(desc2 *TupleDesc) *TupleDesc {
 	return &TupleDesc{Fields: fields} //replace me
 }
 ```
-
 将 desc2 接到 desc 后， 并返回一个新的TupleDesc
-
 ## Tuple 
-
 ```go
 // Interface used for tuple field values
 // Since it implements no methods, any object can be used
@@ -199,11 +123,8 @@ type Tuple struct {
 type recordID interface {
 }
 ```
-
 Tuple 由Desc描述，Fields 数据与recordID组成
-
 ## Tuple.writeTo方法
-
 ```go
 // Serialize the contents of the tuple into a byte array Since all tuples are of
 // fixed size, this method should simply write the fields in sequential order
@@ -250,17 +171,14 @@ func (t *Tuple) writeTo(b *bytes.Buffer) error {
 	return nil //replace me
 }
 ```
-
 将 Tuple中的字段序列化写入 buffer中
 区分 IntType 和 StringType
 int类型以int64进行写入
 string类型补充StringLength长度后写入
-
 > ！不确定UnknownType 如何处理
 > 暂时以报错进行处理
 
 ## Tuple.readTupleFrom 方法
-
 ```go
 // TODO: recordID inplement
 type RecordID struct {
@@ -268,7 +186,6 @@ type RecordID struct {
 	SlotNo int
 }
 ```
-
 ```go
 // Read the contents of a tuple with the specified [TupleDesc] from the
 // specified buffer, returning a Tuple.
@@ -330,17 +247,14 @@ func readTupleFrom(b *bytes.Buffer, desc *TupleDesc) (*Tuple, error) {
 
 }
 ```
-
 从buffer中读取数据，根据desc中提供的类型
 int类型以int64读入
 string类型以stringlength长度字节串读入。
 将data中的数据转换为fields
-
 > ！不确定UnknownType 如何处理
 > 以报错处理
 
 ## Tuple.equals 方法
-
 ```go
 // Compare two tuples for equality.  Equality means that the TupleDescs are equal
 // and all of the fields are equal.  TupleDescs should be compared with
@@ -367,13 +281,10 @@ func (t1 *Tuple) equals(t2 *Tuple) bool {
 	return true
 }
 ```
-
 比较 t1 和 t2 是否相等
 TupleDesc 使用 TupleDesc.equals 方法
 Fields 进行遍历比较
-
 ## Tuple.joinTuples 方法
-
 ```go
 // Merge two tuples together, producing a new tuple with the fields of t2 appended to t1.
 func joinTuples(t1 *Tuple, t2 *Tuple) *Tuple {
@@ -388,13 +299,10 @@ func joinTuples(t1 *Tuple, t2 *Tuple) *Tuple {
 	}
 }
 ```
-
 合并 t1 和 t2
 先合并 Desc，使用Desc.merge方法
 再合并Fields
-
 ## Tuple.compareField 方法
-
 ```go
 // Apply the supplied expression to both t and t2, and compare the results,
 // returning an orderByState value.
@@ -449,13 +357,10 @@ func (t *Tuple) compareField(t2 *Tuple, field Expr) (orderByState, error) {
 	} // replace me
 }
 ```
-
 首先获取t和t2的值
 然后获取类型
 根据类型进行类型断言处理，比较值的结果
-
 ## Tuple.project 方法
-
 ```go
 // Project out the supplied fields from the tuple. Should return a new Tuple
 // with just the fields named in fields.
@@ -494,30 +399,14 @@ func (t *Tuple) project(fields []FieldType) (*Tuple, error) {
 }
 
 ```
-
 从 tuples 投影出 fields中对应的字段
 通过遍历进行寻找fields中对应的字段
-
 ## 测试
-
 `tuple_test`
-![image.png](./mit-6583-lab1/1703147235363-f21f961f-4947-40ac-8cd3-d19e9d46ada2.png)
+![image.png](./mit-6583-lab1E/1703147235363-f21f961f-4947-40ac-8cd3-d19e9d46ada2.png)
 全部测试通过
-
-# BufferPool
-
-> The buffer pool (class BufferPool in GoDB) is responsible for caching pages in memory that have been recently read from disk. All operators read and write pages from various files on disk through the buffer pool. It consists of a fixed number of pages, defined by the numPages parameter to the BufferPool constructor NewBufferPool.
-> For this lab, you only need to implement the constructor and the BufferPool.getPage() method used by the HeapFile iterator. The buffer pool stores structs that implement the Page interface; these pages can be read from underlying database files (such as a heap file) which implement the DBFile interface using the readPage method. The BufferPool should store up to numPages pages. If more than numPages requests are made for different pages, you should evict one of them according to an eviction policy of your choice. Note that you should not evict dirty pages (pages where the Page method isDirty() returns true), for reasons we will explain when we discuss transactions later in the class. You don't need to worry about locking in lab 1.
-
-缓冲池（Godb class Bufferpool）负责最近从磁盘阅读的记忆中的缓存页面。 所有操作员都通过缓冲池从磁盘上的各个文件读取页面。 它由固定数量的页面组成，由numpages参数定义为bufferpool构造函数newbufferpool。
-对于此实验室，您只需要实现HeapFile Iterator使用的构造函数和BufferPool.getPage（）方法即可。 缓冲池存储实现页面接口的结构； 这些页面可以从基础数据库文件（例如堆文件）中读取，这些文件使用readPage方法实现了DBFILE接口。 BufferPool应该存储到数字页面。 如果针对不同页面提出了超过数字请求，则应根据您选择的驱逐政策将其中之一驱逐。 请注意，您不应驱逐肮脏的页面（页面方法iSdirty（）返回true的页面），其原因是当我们稍后在课堂上讨论交易时，我们将解释。 您不必担心在实验室1中锁定。
-
----
-
 # Exercise 2
-
 ## Q:
-
 > 实现`getPage()` 方法
 > `buffer_pool.go`
 > There is a unit test buffer_pool_test.go, but you will not be able to pass this testuntil you implement the heap file and heap page methods below. You will also test the functionalityof the buffer pool when you implement your heap file iterator.
@@ -528,9 +417,7 @@ func (t *Tuple) project(fields []FieldType) (*Tuple, error) {
 当缓冲池中的页面数量超过这个数目时，应该在加载下一个页面之前将一个页面从池中逐出。驱逐政策的选择由你自己决定；没有必要做一些复杂的事情。
 注意，BufferPool要求您实现flush_all_ages()方法。在真正的缓冲池实现中，这不是您永远需要的东西。
 然而，出于测试目的，我们需要此方法。您真的不应该从代码中的任何位置调用此方法。
-
 ## Bufferpool
-
 ```go
 type BufferPool struct {
 	// TODO: some code goes here
@@ -545,12 +432,9 @@ func NewBufferPool(numPages int) *BufferPool {
 	return &BufferPool{pages: pages, numPages: numPages}
 }
 ```
-
 BufferPool中含有一个map存储Page, numPages为BufferPool的容量
 在HeapFile中实现的PageKey方法，为对应的FileName和PageNo生成一个哈希值作为key
-
 ## Bufferpool.FlushAllPages()
-
 ```go
 // Testing method -- iterate through all pages in the buffer pool
 // and flush them using [DBFile.flushPage]. Does not need to be thread/transaction safe
@@ -566,12 +450,9 @@ func (bp *BufferPool) FlushAllPages() {
 	}
 }
 ```
-
 遍历所有的Page，调用dbfile的flush方法
 测试方法，仅用于测试，在实际使用中不需要
-
 ## Bufferpool.GetPage()
-
 ```go
 func (bp *BufferPool) GetPage(file DBFile, pageNo int, tid TransactionID, perm RWPerm) (*Page, error) {
 	// TODO: some code goes here
@@ -611,56 +492,33 @@ func (bp *BufferPool) GetPage(file DBFile, pageNo int, tid TransactionID, perm R
 	}
 }
 ```
-
 从BufferPool中获取pageNo对应的页面
 根据Page的hash值，判断Page是否位于BufferPool中
 若在，则直接返回
 若不在，则从读取页面，存入BufferPool中
 若BufferPool已满，则需要驱逐一个非脏页。
-
 ## 测试
-
 `buffer_pool_test.go`
 测试需要完成以下的HeapFile和HeapPage才能通过
-
-# HeapFile access method
-
-> Access methods provide a way to read or write data from disk that is arranged in a specific way. Common access methods include heap files (unsorted files of tuples) and B-trees; for this assignment, you will only implement a heap file access method, and we have written some of the code for you.
-> A HeapFile object is arranged into a set of pages, each of which consists of a fixed number of bytes for storing tuples, (defined by the constant PageSize), including a header. In GoDB, there is one HeapFile object for each table in the database. Each page in a HeapFile is arranged as a set of slots, each of which can hold one tuple (tuples for a given table in GoDB are all of the same size).
-> Pages of HeapFile objects are of type HeapPage which implements the Page interface. Pages are stored in the buffer pool but are read and written by the HeapFile class. Because pages are fixed size, and tuple are fixed size, in GoDB, all pages store the same number of tuples. You are free to choose your in-memory implementation of HeapPage but a reasonable choice would be a slice of Tuples.
-> GoDB stores heap files on disk as pages of data arranged consecutively on disk. On disk, each page consists of a header, followed by the PageSize - header size bytes of actual page content. The header consists of a 32 bit integer with the number of slots (tuples), and a second 32 bit integer with the number of used slots. See the comments at the beginning of heap_page.go for more details on the representation.
-
-访问方法提供了一种从以特定方式排列的磁盘读取或写入数据的方法。常见的访问方法包括堆文件(未排序的元组文件)和B树；对于此赋值，您将只实现堆文件访问方法，我们已经为您编写了部分代码。
-一个HeapFile对象被安排到一组页面中，每个页面由固定数量的字节组成，用于存储元组(由常量pageSize定义)，包括一个标头。在GoDB中，数据库中的每个表都有一个HeapFile对象。HeapFile中的每个页面都被安排为一组槽，每个槽可以容纳一个元组(GoDB中给定表的元组都具有相同的大小)。
-HeapFile对象的页面是实现Page接口的HeapPage类型。页面存储在缓冲池中，但由HeapFile类读取和写入。由于页面大小固定，元组大小固定，因此在GoDB中，所有页面都存储相同数量的元组。您可以自由选择HeapPage的内存实现，但合理的选择应该是一段元组。
-GoDB将堆文件作为连续排列在磁盘上的数据页存储在磁盘上。在磁盘上，每个页面都包含一个页眉，后跟实际页面内容的pageSize-Header大小字节。报头由一个带有时隙(元组)数量的32位整数和另一个带有已用时隙数量的32位整数组成。请参阅heap_page开头的注释。有关表示的更多详细信息，请转至。
-`heap_page.go`
-
 # Exercise 3
-
 ## Q:
-
 > `heap_page.go`
 > Although you are not required to use exactly our interface for heap_page.go, you will likely find the methods we have provided to be useful and we recommend following our skeleton.
 
 尽管您不需要完全使用我们的heap_page.go接口，但您可能会发现我们提供的方法很有用，我们建议您遵循我们的框架。
-
 > Assuming you follow our outline, there are five non-trivial methods to implement:
->
 > 1. insertTuple() : This method should add a tuple to the page if there is space. Because a heap file is unordered, itcan be inserted in any free slot.
 > 2. deleteTuple() : Delete a specific tuple from the page.Note that this method takes a specific recordID (or "rid") to delete. recordID is an empty interface; you are freeto use any struct you like for the rid, but for a heap file a rid would typically include the page number and the slot number on the page.The page number would typically be the offset in the heap file of the page, and the slot number would likely by the position of the tuplein the in-memory slice of tuples on the page. You will set the rid field of the tuples you return from your iterator. Your heap file implementation should use this rid to identify the specific page to delete from, and then pass the rid into this method so that you can delete the appropriate tuple. Note that if you choose to represent a page in memory as a slice of tuples, and the slot in the rid is the position in the slice, you should take care to not cause the rid to change when you perform the deletion. One way to achieve this is to set the position in the slice to nil (rather than creating a new slice with the deleted tuple removed from it), but many implementations are possible.
 > 3. toBuffer() : Serialize the pages to a bytes.Buffer object for saving to disk, using the binary.Write() method to encode the header and the writeTo() method from your tuple implementation. Note that the header includes the number of used slots, but does not encode which slots are empty and which are not. This is ok, because, in GoDB you do not need to preserve the record ids of records when they are written out (so a particular tuple's rid may change after it is written and then read back.) 
 > 4. initFromBuffer() : Read the page from the specified buffer by reading the header with the binary.Read() method and then the tuples using the readTupleFrom() method.
-> 5. tupleIter() : Return a function that can be invoked to interate through the tuples of the page. See the note about iterators in [2.2](#22-operators-and-iterators) above.
+> 5. tupleIter() : Return a function that can be invoked to interate through the tuples of the page. See the note about iterators in [2.2](https://www.yuque.com/icathianrain/pdya3s/kxbledbm2h46qbig#22-operators-and-iterators) above.
 
 假设您遵循我们的大纲，有五种重要的方法可以实现：
-
-  1. `insertTuple()` ：如果有空间，此方法应该向页面添加一个元组。 由于堆文件是无序的，因此可以将其插入到任何空闲槽中。
- 2. `deleteTuple()` ：从页面中删除特定的元组。请注意，此方法需要特定的 recordID（或“rid”）来删除。  recordID是一个空接口； 您可以自由地使用任何您喜欢的结构来删除，但对于堆文件，删除通常包括页码和页面上的槽号。页号通常是该页的堆文件中的偏移量，而槽号可能是该页上元组的内存片中元组的位置。 您将设置从迭代器返回的元组的 Rid 字段。 您的堆文件实现应该使用此rid 来识别要从中删除的特定页面，然后将rid 传递到此方法中，以便您可以删除适当的元组。 请注意，如果您选择将内存中的页面表示为元组切片，并且rid中的槽是切片中的位置，则应注意在执行删除时不要导致rid发生更改。 实现此目的的一种方法是将切片中的位置设置为 nil（而不是创建一个新切片并从中删除已删除的元组），但许多实现都是可能的。
- 3. `toBuffer()` ：将页面序列化为 `bytes.Buffer` 对象以保存到磁盘，使用 `binary.Write()` 方法对标头进行编码，并使用元组实现中的 `writeTo()` 方法 。 请注意，标头包括已使用的时隙数，但不编码哪些时隙为空、哪些时隙不是。 这是可以的，因为在 GoDB 中，您不需要在写出记录时保留记录的记录 ID（因此特定元组的 ID 在写入然后读回后可能会发生变化。）
-  4. `initFromBuffer()` ： 通过使用“binary.Read()”方法读取标头，然后使用“readTupleFrom()”方法读取元组，从指定缓冲区读取页面。
- 5. `tupleIter()` ：返回一个可以被调用以通过页面的元组进行交互的函数。 请参阅上面 [2.2](#22-operators-and-iterators) 中有关迭代器的注释。
-
+ 1. `insertTuple()` ：如果有空间，此方法应该向页面添加一个元组。 由于堆文件是无序的，因此可以将其插入到任何空闲槽中。
+2. `deleteTuple()` ：从页面中删除特定的元组。请注意，此方法需要特定的 recordID（或“rid”）来删除。  recordID是一个空接口； 您可以自由地使用任何您喜欢的结构来删除，但对于堆文件，删除通常包括页码和页面上的槽号。页号通常是该页的堆文件中的偏移量，而槽号可能是该页上元组的内存片中元组的位置。 您将设置从迭代器返回的元组的 Rid 字段。 您的堆文件实现应该使用此rid 来识别要从中删除的特定页面，然后将rid 传递到此方法中，以便您可以删除适当的元组。 请注意，如果您选择将内存中的页面表示为元组切片，并且rid中的槽是切片中的位置，则应注意在执行删除时不要导致rid发生更改。 实现此目的的一种方法是将切片中的位置设置为 nil（而不是创建一个新切片并从中删除已删除的元组），但许多实现都是可能的。
+3. `toBuffer()` ：将页面序列化为 `bytes.Buffer` 对象以保存到磁盘，使用 `binary.Write()` 方法对标头进行编码，并使用元组实现中的 `writeTo()` 方法 。 请注意，标头包括已使用的时隙数，但不编码哪些时隙为空、哪些时隙不是。 这是可以的，因为在 GoDB 中，您不需要在写出记录时保留记录的记录 ID（因此特定元组的 ID 在写入然后读回后可能会发生变化。）
+ 4. `initFromBuffer()` ： 通过使用“binary.Read()”方法读取标头，然后使用“readTupleFrom()”方法读取元组，从指定缓冲区读取页面。
+5. `tupleIter()` ：返回一个可以被调用以通过页面的元组进行交互的函数。 请参阅上面 [2.2](#22-operators-and-iterators) 中有关迭代器的注释。
 > There are a few other methods (setDirty(), isDirty(), getNumSlots(), and the newHeapPage() constructor) that you will need to implement, but these should be straightfoward.
 > At this point, your code should pass the unit tests in heap_page_test.go.
 > After you have implemented HeapPage, you will write methods for HeapFile thatread pages from the file, iterate through pages, and insert and deleterecords. 
@@ -668,9 +526,7 @@ GoDB将堆文件作为连续排列在磁盘上的数据页存储在磁盘上。�
 您还需要实现一些其他方法（`setDirty()`、`isDirty()`、`getNumSlots()` 和 `newHeapPage()` 构造函数），但这些方法应该很简单。
 此时，您的代码应该通过“heap_page_test.go”中的单元测试。
 实现“HeapPage”后，您将为“HeapFile”编写方法 从文件中读取页面、遍历页面以及插入和删除记录。
-
 ## heapPage
-
 ```go
 type heapPage struct {
 	// TODO: some code goes here
@@ -711,24 +567,21 @@ func newHeapPage(desc *TupleDesc, pageNo int, f *HeapFile) *heapPage {
 	} //replace me
 }
 ```
-
 一个页面在文件中的存储如下
 
 - 大小为PageSize
 - 4个字节存储numSlots
 - 4个字节存储numUsed
 - 剩下存储numSlots个槽的内容
-  :::info
-  !Attention:
-  若页面不能刚好存储整数倍个槽的时候或有空闲的槽，存在空位需要用0来填充（否则影响下一个页面）
-  将页面内容写入文件时，空的槽不写入，存数据的槽直接写入
-  下次读取页面的时候，数据将填充前numUsed个槽
-  简单理解: 0, 2, 4, 5, 6, 10槽有数据，写入文件，则文件前6个槽中有数据
-  下次读取时，RecordID变为0,1,2,3,4,5
-  :::
-
+:::info
+!Attention:
+若页面不能刚好存储整数倍个槽的时候或有空闲的槽，存在空位需要用0来填充（否则影响下一个页面）
+将页面内容写入文件时，空的槽不写入，存数据的槽直接写入
+下次读取页面的时候，数据将填充前numUsed个槽
+简单理解: 0, 2, 4, 5, 6, 10槽有数据，写入文件，则文件前6个槽中有数据
+下次读取时，RecordID变为0,1,2,3,4,5
+:::
 ## NumSlots
-
 ```go
 func (h *heapPage) getNumSlots() int {
 	// TODO: some code goes here
@@ -739,11 +592,8 @@ func (h *heapPage) getNumEmptySlots() int {
 	return int(h.numSlots - h.numUsed)
 }
 ```
-
 返回现有的槽数，空闲的槽数
-
 ## insertTuple
-
 ```go
 // Insert the tuple into a free slot on the page, or return an error if there are
 // no free slots.  Set the tuples rid and return it.
@@ -776,11 +626,8 @@ func (h *heapPage) insertTuple(t *Tuple) (recordID, error) {
 	return 0, GoDBError{code: TypeMismatchError, errString: "tuple's desc doesn't match"} //replace me
 }
 ```
-
 在heapPage中，可以通过遍历tuples数组，若值为nil则说明为空，插入Tuple
-
 ## deleteTuple
-
 ```go
 // Delete the tuple in the specified slot number, or return an error if
 // the slot is invalid
@@ -801,11 +648,8 @@ func (h *heapPage) deleteTuple(rid recordID) error {
 	return GoDBError{code: TupleNotFoundError, errString: "tuple Numer over"} //replace me
 }
 ```
-
 删除指定recordID的元组
-
 ## Dirty & File
-
 ```go
 // Page method - return whether or not the page is dirty
 func (h *heapPage) isDirty() bool {
@@ -826,9 +670,7 @@ func (p *heapPage) getFile() *DBFile {
 	return &p.file //replace me
 }
 ```
-
 ## toBuffer()
-
 ```go
 func (h *heapPage) toBuffer() (*bytes.Buffer, error) {
 	// TODO: some code goes here
@@ -864,14 +706,11 @@ func (h *heapPage) toBuffer() (*bytes.Buffer, error) {
 	return buf, nil //replace me
 }
 ```
-
 首先写入槽位数和已使用槽位数
 接着将非空的写入
 将剩余空间以0进行填充
 读写前后，元组的RID会发生变化
-
 ## initFromBuffer
-
 ```go
 // Read the contents of the HeapPage from the supplied buffer.
 func (h *heapPage) initFromBuffer(buf *bytes.Buffer) error {
@@ -899,13 +738,10 @@ func (h *heapPage) initFromBuffer(buf *bytes.Buffer) error {
 	return nil //replace me
 }
 ```
-
 从字节数据中初始化页面
 首先初始化页头
 然后将存有数据的元组读取出来
-
 ## tupleIter
-
 ```go
 func (p *heapPage) tupleIter() func() (*Tuple, error) {
 	// TODO: some code goes here
@@ -926,45 +762,38 @@ func (p *heapPage) tupleIter() func() (*Tuple, error) {
 	} //replace me
 }
 ```
-
 返回一个迭代器函数函数
 每调用一次该函数，将会返回下一个非空tuple，若为结尾则返回空
-
 ## 测试
-
 `heap_page_test.go`
-![image.png](./mit-6583-lab1/1703586128151-c7fa35e5-6edc-4c3e-a6fb-5250257c5ef9.png)
+![image.png](./mit-6583-lab1E/1703586128151-c7fa35e5-6edc-4c3e-a6fb-5250257c5ef9.png)
 全部测试通过
-
 # Exercise 4
-
 ## Q：
-
 > Implement the skeleton methods in:
 > `heap_file.go`
 > There are a number of methods you need to implement; we have provided additional implementation tips in the comments in `heap_file.go`.
->
 > 1. `NewHeapFile()` - The constructor.  It takes a file name that contains the binary encoding of the file (we name these `table.dat` by convention), as well as the TupleDesc that can be used to determine the expected format of the file and a buffer pool object that you will use to retrieve cached pages.
 > 2. `NumPages()` - Return the number of pages in the heap file;  you can use the `File.Stat()` method to determine the size of the heap file in bytes.
 > 3. `readPage()` - Read a specific page from storage. To read a page from disk, you will first need to calculate the correct offset in
->    the file. Hint: you will need random access to the file in order to read and
->    write pages at arbitrary offsets -- check out the golang `os.File` type and its `ReadAt()` method.
->    You should not call `BufferPool` methods when reading a page from disk in the `readPage()` method, but you will
->    use the buffer pool `getPage()` method in your implementations of the heap file `iterator`.  Once you have read in the bytes of the page you can create the page using the heap page method `newHeapPage()`.  You can convert bytes read from a file to a buffer via the `bytes.NewBuffer()` method.
+the file. Hint: you will need random access to the file in order to read and
+write pages at arbitrary offsets -- check out the golang `os.File` type and its `ReadAt()` method.
+You should not call `BufferPool` methods when reading a page from disk in the `readPage()` method, but you will
+use the buffer pool `getPage()` method in your implementations of the heap file `iterator`.  Once you have read in the bytes of the page you can create the page using the heap page method `newHeapPage()`.  You can convert bytes read from a file to a buffer via the `bytes.NewBuffer()` method.
 > 4. `flushPage()` - Force a given page object back to disk.  The supplied page will be a `HeapPage`;  you should cast it and retrieve its bytes via the heap page method `toBytes()`.  You can then write these bytes back to the appropriate location on disk by opening the backing file and using a method like `os.File.WriteAt()`.
 > 5. `insertTuple()` - Add a tuple to the heap file;  because the heap file is unordered, it can be inserted in any free slot in the file
 > 6. `deleteTuple()` - Remove a specific tuple from the heap file.  You should use the rid field of the tuple to determine which page the
->    tuple is in, and call the heap page method `deleteTuple()` on the appropriage page.
+tuple is in, and call the heap page method `deleteTuple()` on the appropriage page.
 > 7. `Descriptor()`
-> 8. `Iterator()` - Return a function that iterates through the tuples of the heap file one at a time.  You should iterate through the pages and use the `tupleIter()` to iterate through the the tuples of each heap page.  See the note above about iterators in GoDB in [2.2](#22-operators-and-iterators) above.
->    This method should read pages using the buffer pool method `getPage()` which will eventually be used (in
->    a later lab) to implement locking-based concurrency control and recovery. Do
->    not load the entire table into memory when the iterator is instantiated -- this will cause an
->    out of memory error for very large tables.  Instead, you will just load one page at a
->    time as the buffer pool accesses them via calls to `readPage()`.
+> 8. `Iterator()` - Return a function that iterates through the tuples of the heap file one at a time.  You should iterate through the pages and use the `tupleIter()` to iterate through the the tuples of each heap page.  See the note above about iterators in GoDB in [2.2](https://www.yuque.com/icathianrain/pdya3s/kxbledbm2h46qbig#22-operators-and-iterators) above.
+This method should read pages using the buffer pool method `getPage()` which will eventually be used (in
+a later lab) to implement locking-based concurrency control and recovery. Do
+not load the entire table into memory when the iterator is instantiated -- this will cause an
+out of memory error for very large tables.  Instead, you will just load one page at a
+time as the buffer pool accesses them via calls to `readPage()`.
 > 9. `pageKey()` - Return a struct that can be used as a key for the page.  The buffer pool uses this to determine whether the page is cached or not.  We have provided an implementation hint in the comment of this function.
->
-> At this point, your code should pass the unit tests in `heap_file_test.go` and `buffer_pool_test.go`.  This completes the tests for this lab.  You should complete the final exercises in the next section.
+> 
+At this point, your code should pass the unit tests in `heap_file_test.go` and `buffer_pool_test.go`.  This completes the tests for this lab.  You should complete the final exercises in the next section.
 
 您需要实施多种方法； 我们在 heap_file.go 的注释中提供了额外的实现技巧。
 
@@ -979,9 +808,7 @@ func (p *heapPage) tupleIter() func() (*Tuple, error) {
 9. pageKey() - 返回一个可以用作页面键的结构。 缓冲池使用它来确定页面是否被缓存。 我们在该函数的注释中提供了实现提示。
 
 此时，您的代码应该通过 heap_file_test.go 和 buffer_pool_test.go 中的单元测试。 本实验室的测试就此完成。 您应该完成下一节中的最终练习。
-
 ## HeapFile
-
 ```go
 type HeapFile struct {
 	// TODO: some code goes here
@@ -1008,12 +835,9 @@ func NewHeapFile(fromFile string, td *TupleDesc, bp *BufferPool) (*HeapFile, err
 	}, nil //replace me
 }
 ```
-
 fromFile文件名
 td tuple描述
-
 ## NumPages
-
 ```go
 // Return the number of pages in the heap file
 func (f *HeapFile) NumPages() int {
@@ -1028,11 +852,8 @@ func (f *HeapFile) NumPages() int {
 	return int(fileSize) / PageSize //replace me
 }
 ```
-
 此处的页面数是根据数据库文件的大小确定的
-
 ## readPage
-
 ```go
 func (f *HeapFile) readPage(pageNo int) (*Page, error) {
 	// TODO: some code goes here
@@ -1058,12 +879,9 @@ func (f *HeapFile) readPage(pageNo int) (*Page, error) {
 	return &page, nil
 }
 ```
-
 从文件中对应位置读取内容
 然后初始化页面
-
 ## flushPage
-
 ```go
 func (f *HeapFile) flushPage(p *Page) error {
 	// TODO: some code goes here
@@ -1087,11 +905,8 @@ func (f *HeapFile) flushPage(p *Page) error {
 	return nil //replace me
 }
 ```
-
 将页面写入文件中对应位置
-
 ## insert & delete Tuple
-
 ```go
 func (f *HeapFile) insertTuple(t *Tuple, tid TransactionID) error {
 	// TODO: some code goes here
@@ -1127,12 +942,10 @@ func (f *HeapFile) insertTuple(t *Tuple, tid TransactionID) error {
 	return nil //replace me
 }
 ```
-
 首先看现有的page中是否有空的slot
 使用bufPool读取page
 如果有，则插入tuple
 否则，新建一个页面，插入tuple，并将页面插入到文件的最后(flush page)
-
 ```go
 func (f *HeapFile) deleteTuple(t *Tuple, tid TransactionID) error {
 	// TODO: some code goes here
@@ -1150,21 +963,16 @@ func (f *HeapFile) deleteTuple(t *Tuple, tid TransactionID) error {
 	return nil //replace me
 }
 ```
-
 根据Tuple的RID获取page
 再将RID传给page的删除tuple方法进行tuple删除
-
 ## Descriptor
-
 ```go
 func (f *HeapFile) Descriptor() *TupleDesc {
 	// TODO: some code goes here
 	return f.td //replace me
 }
 ```
-
 ## Iterator
-
 ```go
 func (f *HeapFile) Iterator(tid TransactionID) (func() (*Tuple, error), error) {
     // 迭代page
@@ -1205,13 +1013,10 @@ func (f *HeapFile) Iterator(tid TransactionID) (func() (*Tuple, error), error) {
     }, nil
 }
 ```
-
 pageNo负责迭代页面
 iter负责页面内的元组迭代
 注意迭代页面时将pageNo递增同时将iter置为nil，方便下个页面iter的获取
-
 ## heapHash
-
 ```go
 // internal strucuture to use as key for a heap page
 type heapHash struct {
@@ -1236,43 +1041,29 @@ func (f *HeapFile) pageKey(pgNo int) any {
 	return HeapHash.Hash() //replace me
 }
 ```
-
 将传入的pgNo与文件名进行hash
-
 ## 测试
-
 `heap_file_test.go`
-![image.png](./mit-6583-lab1/1703596815384-d84cdf32-dd91-44be-b60c-299eb4433c4e.png)
+![image.png](./mit-6583-lab1E/1703596815384-d84cdf32-dd91-44be-b60c-299eb4433c4e.png)
 测试通过，但大数据读写效率较低
 
 ---
 
 `buffer_pool_test.go`
-![image.png](./mit-6583-lab1/1703596871399-7a426e7b-83f9-4411-8ba1-5040d9da8812.png)
+![image.png](./mit-6583-lab1E/1703596871399-7a426e7b-83f9-4411-8ba1-5040d9da8812.png)
 测试通过
-
-# A simple Query
-
-> In the next lab, you will implement "Operators" that will allow you to run actual SQL queries against GoDB. For the final test in this lab, we ask you to implement a simple query in go logic. This method takes the name of a CSV file and a TupleDesc and a field name and return the sum of the supplied field name. You can use the HeapFile.LoadFromCSV method to load the CSV file, and the fieldFieldInTd methodto find the field number in the TupleDesc, if it exists.
-
-在下一个实验中，您将实现“Operators”，它允许您针对 GoDB 运行实际的 SQL 查询。 对于本实验室的最终测试，我们要求您在 go 逻辑中实现一个简单的查询。 此方法采用 CSV 文件的名称、“TupleDesc”和字段名称，并返回所提供字段名称的总和。 您可以使用“HeapFile.LoadFromCSV”方法加载CSV文件，以及“fieldFieldInTd”方法 查找“TupleDesc”中的字段编号（如果存在）。
-
 # Exercise 5
-
 ## Q
-
 > `lab1_query.go`
 > We have supplied a simple test case for you for this method in lab1_query_test.go, although we will also test it with other files to confirm your implementation is working.
 
 我们在“lab1_query_test.go”中为此方法提供了一个简单的测试用例，尽管我们还将使用其他文件对其进行测试以确认您的实现正常工作。
-
 ## computeFieldSum
-
 ```go
 func computeFieldSum(fileName string, td TupleDesc, sumField string) (int, error) {
 	// TODO: some code goes here
 	// 打开数据库文件
-	lab1_bp := "lab1_bp"
+	lab1_bp := "lab1_bp.dat"
 	// 如果文件存在，就删除
 	if _, err := os.Stat(lab1_bp); err == nil {
 		os.Remove(lab1_bp)
@@ -1291,8 +1082,11 @@ func computeFieldSum(fileName string, td TupleDesc, sumField string) (int, error
 	if err != nil {
 		return 0, err
 	}
+	tid := NewTID()
+	// 开启事务
+	hpfile.bufPool.BeginTransaction(tid)
 	// 遍历heapfile，计算sum
-	iter, err := hpfile.Iterator(NewTID())
+	iter, err := hpfile.Iterator(tid)
 	if err != nil {
 		return 0, err
 	}
@@ -1313,16 +1107,15 @@ func computeFieldSum(fileName string, td TupleDesc, sumField string) (int, error
 		}
 	}
 	// 返回sum
+	hpfile.bufPool.CommitTransaction(tid)
 	return sum, nil // replace me
 }
-```
 
+```
 新建一个heapFile，指定数据库目录
 从CSV中加载数据库
 对数据库进行查询，返回特定Field的sum值
-
 ## 测试
-
 `lab1_query_test.go`
-![image.png](./mit-6583-lab1/1703599178330-43028805-af97-4782-9bf8-cf8b697f2ea3.png)
+![image.png](./mit-6583-lab1E/1703599178330-43028805-af97-4782-9bf8-cf8b697f2ea3.png)
 测试通过
