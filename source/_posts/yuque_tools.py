@@ -4,26 +4,30 @@
 # image_dir: 图片存储的目录
 # image_url_prefix: 图片链接前缀，空字符串或者路径或者CDN地址
 # image_rename_mode: 图片重命名模式，raw: 原始uuid模式，asc: 递增重命名模式
-# python .\yuque_tools.py .\mit-6583-lab0_tmp.md ./mit-6583-lab0.md mit-6583-lab0 './mit-6583-lab0/'
+# python .\yuque_tools.py ./lab1.md ./mit-6583-lab1.md 
 
 import re
 import requests
 import os
 import sys
+import time
 
 yuque_cdn_domain = 'cdn.nlark.com'
 output_content = []
 image_file_prefix = 'image-'
 
+file_name = ""
+
 def main():
+
     origin_md_path = sys.argv[1]
     output_md_path = sys.argv[2]
-    image_dir = sys.argv[3]
-    # image_url_prefix = ''
-    image_url_prefix = sys.argv[4]
+    global file_name
+    file_name = output_md_path.split('/')[-1].split('.')[0]    
 
+    image_dir = './' + file_name + '/'
+    image_url_prefix = './' + file_name + '/'
     image_rename_mode = 'raw'
-    # image_rename_mode = sys.argv[5] # raw asc
     
     mkdir(image_dir)
     cnt = handler(origin_md_path, output_md_path, image_dir, image_url_prefix, image_rename_mode)
@@ -61,7 +65,15 @@ def handler(origin_md_path, output_md_path, image_dir, image_url_prefix, image_r
                 idx += 1
                 line = line.replace(image_url, new_image_url)
             output_content.append(line)
+    prefix_content = f'''---
+title: {file_name.replace('-', ' ')}
+date: {time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}
+tags: 
+categories: 
+---
+'''.format(output_md_path.split('/')[-1].split('.')[0], time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
     with open(output_md_path, 'w', encoding='utf-8', errors='ignore') as f:
+        f.write(prefix_content)
         for _output_content in output_content:
             f.write(str(_output_content))
     return idx
