@@ -1058,9 +1058,9 @@ hexo-i18n@^2.0.0:
   dependencies:
     sprintf-js "^1.1.2"
 
-hexo-image-link@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.npmjs.org/hexo-image-link/-/hexo-image-link-0.0.5.tgz"
+hexo-image-link@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/hexo-image-link/-/hexo-image-link-0.0.6.tgz#1aec5c01174ae1b42ce6fd2043d266bc2b7f46f2"
 
 hexo-log@^0.2.0:
   version "0.2.0"
