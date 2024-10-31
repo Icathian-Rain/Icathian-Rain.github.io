@@ -9,6 +9,10 @@
       link: https://space.bilibili.com/47310416
       avatar: /images/bilibili.png
       descr: 我的Bilibili主页
+    - name: Yuque
+      link: https://www.yuque.com/icathianrain
+      avatar: /images/yuque.png
+      descr: 我的语雀主页
 - class_name: 友情链接
   class_desc: 
   link_list:
